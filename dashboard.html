@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>E-Commerce Analytics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAF7F2;--bg2:#F3EFE8;--card:#FFFFFF;--border:#DDD8D0;
+  --ink:#1C1917;--ink2:#44403C;--ink3:#78716C;
+  --rose:#C2716F;--teal:#3D7D7A;--gold:#B8860B;
+}
+body{background:var(--bg);font-family:system-ui,sans-serif;color:var(--ink);min-height:100vh}
+header{background:var(--ink);color:#fff;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:1.1rem;font-weight:600;letter-spacing:0.02em}
+header span{font-size:0.8rem;opacity:0.6}
+.container{max-width:1400px;margin:0 auto;padding:1.5rem 2rem}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:0.9rem;padding:1.25rem 1.5rem;border-left:4px solid var(--rose)}
+.kpi:nth-child(2){border-left-color:var(--teal)}
+.kpi:nth-child(3){border-left-color:var(--gold)}
+.kpi:nth-child(4){border-left-color:#9B8EA0}
+.kpi-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--ink3);margin-bottom:0.4rem}
+.kpi-value{font-size:1.9rem;font-weight:700;color:var(--ink);line-height:1}
+.kpi-change{font-size:0.78rem;margin-top:0.4rem;color:var(--teal)}
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:1rem;margin-bottom:1rem}
+.charts-row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:0.9rem;padding:1.25rem}
+.chart-title{font-size:0.88rem;font-weight:600;color:var(--ink);margin-bottom:1rem}
+canvas{width:100%!important;max-height:200px}
+footer-bar{display:block;text-align:center;padding:1rem;font-size:0.75rem;color:var(--ink3);border-top:1px solid var(--border);margin-top:1rem}
+@media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.charts-row,.charts-row2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>📊 E-Commerce Analytics Dashboard</h1>
+  <span>Aishwarya Bollipogu · 2023 Full Year</span>
+</header>
+<div class="container">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total Revenue</div><div class="kpi-value">₹24.8L</div><div class="kpi-change">↑ 12.4% vs last year</div></div>
+    <div class="kpi"><div class="kpi-label">Total Orders</div><div class="kpi-value">8,342</div><div class="kpi-change">↑ 8.1% vs last year</div></div>
+    <div class="kpi"><div class="kpi-label">Avg Order Value</div><div class="kpi-value">₹2,972</div><div class="kpi-change">↑ 3.9% vs last year</div></div>
+    <div class="kpi"><div class="kpi-label">Profit Margin</div><div class="kpi-value">22.6%</div><div class="kpi-change">↑ 1.2 pts vs last year</div></div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-card"><div class="chart-title">Monthly Revenue & Orders Trend</div><canvas id="c1"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Revenue by Category</div><canvas id="c2"></canvas></div>
+  </div>
+  <div class="charts-row2">
+    <div class="chart-card"><div class="chart-title">Customer Segment Split</div><canvas id="c3"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Regional Performance</div><canvas id="c4"></canvas></div>
+    <div class="chart-card"><div class="chart-title">Payment Methods</div><canvas id="c5"></canvas></div>
+  </div>
+</div>
+<footer-bar>Built by Aishwarya Bollipogu · github.com/TheAishwarya-a · Powered by Chart.js</footer-bar>
+<script>
+const rose="#C2716F",teal="#3D7D7A",gold="#B8860B",ink="#1C1917",muted="#78716C";
+const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const rev=[18,22,19,25,28,31,26,33,29,35,38,41];
+const orders=[620,710,680,780,840,920,800,980,860,1020,1100,1230];
+
+Chart.defaults.font.family="system-ui";
+Chart.defaults.color=muted;
+Chart.defaults.plugins.legend.labels.boxWidth=12;
+
+new Chart(document.getElementById("c1"),{type:"bar",data:{labels:months,
+  datasets:[
+    {label:"Revenue (₹K)",data:rev,backgroundColor:"rgba(194,113,111,0.18)",borderColor:rose,borderWidth:2,borderRadius:4,order:2},
+    {label:"Orders",data:orders,type:"line",borderColor:teal,borderWidth:2.5,pointRadius:4,pointBackgroundColor:"white",pointBorderColor:teal,pointBorderWidth:2,tension:0.35,yAxisID:"y2",order:1}
+  ]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:"top"}},
+  scales:{y:{title:{display:true,text:"Revenue (₹K)"}},y2:{position:"right",title:{display:true,text:"Orders"},grid:{display:false}}}}});
+
+new Chart(document.getElementById("c2"),{type:"doughnut",data:{labels:["Electronics","Clothing","Home & Kitchen","Books","Sports"],
+  datasets:[{data:[32,25,20,10,13],backgroundColor:[rose,teal,gold,"#9B8EA0","#7E9B8A"],borderColor:"#FAF7F2",borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:"bottom"}},cutout:"60%"}});
+
+new Chart(document.getElementById("c3"),{type:"bar",data:{labels:["Consumer","Corporate","Home Office"],
+  datasets:[{data:[52,32,16],backgroundColor:[rose,teal,gold],borderRadius:5,borderSkipped:false}]},
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false}},
+  scales:{y:{title:{display:true,text:"% Share"}}}}});
+
+new Chart(document.getElementById("c4"),{type:"radar",data:{labels:["Revenue","Orders","Profit","Customers","Growth"],
+  datasets:[
+    {label:"South",data:[85,78,82,70,88],borderColor:rose,backgroundColor:"rgba(194,113,111,0.1)",borderWidth:2,pointRadius:3},
+    {label:"North",data:[72,80,68,75,65],borderColor:teal,backgroundColor:"rgba(61,125,122,0.1)",borderWidth:2,pointRadius:3},
+    {label:"East",data:[60,55,70,58,72],borderColor:gold,backgroundColor:"rgba(184,134,11,0.1)",borderWidth:2,pointRadius:3},
+    {label:"West",data:[78,82,75,80,60],borderColor:"#9B8EA0",backgroundColor:"rgba(155,142,160,0.1)",borderWidth:2,pointRadius:3},
+  ]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:"bottom"}},
+  scales:{r:{min:0,max:100,ticks:{stepSize:25,font:{size:8}}}}}});
+
+new Chart(document.getElementById("c5"),{type:"pie",data:{labels:["UPI","Cash","Card","Insurance"],
+  datasets:[{data:[35,25,20,20],backgroundColor:[teal,rose,gold,"#9B8EA0"],borderColor:"#FAF7F2",borderWidth:3}]},
+  options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:"bottom"}}}});
+</script>
+</body>
+</html>
